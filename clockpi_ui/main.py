@@ -3,6 +3,7 @@ import logging
 import pygame
 
 from clockpi_ui.alarm import Alarm
+from clockpi_ui.args import get_arg_parser
 from clockpi_ui.navigator import Navigator
 from clockpi_ui.screens import ClockScreen
 
@@ -39,12 +40,23 @@ def handle_pygame_event(event: pygame.event.Event) -> bool:
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
+
     logger.info("Starting ClockPi UI")
+
+    init_pygame()
+
+    parser = get_arg_parser()
+    args = parser.parse_args()
+
+    if args.serial:
+        logger.info(f"LED Serial Port: {args.serial}")
+        Alarm.instance().init_serial(args.serial)
 
     Config.instance().load_config()
 
-    init_pygame()
-    screen = pygame.display.set_mode(RESOLUTION, pygame.FULLSCREEN if FULLSCREEN else 0)
+    screen = pygame.display.set_mode(
+        RESOLUTION, pygame.FULLSCREEN if args.fullscreen else 0
+    )
     clock = pygame.time.Clock()
     running = True
 

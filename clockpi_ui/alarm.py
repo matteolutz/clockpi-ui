@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 import pygame
+import serial
 
 from clockpi_ui.config import Config
 from clockpi_ui.utils import Singleton
@@ -15,6 +16,10 @@ class Alarm:
     def __init__(self):
         self._ringing = False
         self._sound = pygame.mixer.Sound(ASSETS_DIR / "sounds" / "alarm.wav")
+        self._serial = None
+
+    def init_serial(self, serial_port: str):
+        self._serial = serial.Serial(serial_port, baudrate=115200)
 
     def update(self):
         if not Config.instance().get_alarm_enabled():
@@ -32,6 +37,10 @@ class Alarm:
             return
         logger.info("Alarm ringing")
         self._sound.play(loops=-1)
+
+        if self._serial:
+            # Command = 0x1, Speed = 0x1
+            self._serial.write(bytes([0x01, 0x01]))
         self._ringing = True
 
     def stop(self):
@@ -39,6 +48,11 @@ class Alarm:
             return
         logger.info("Alarm stopped")
         self._sound.stop()
+
+        if self._serial:
+            # Command = 0x1, Speed = 0xFF (-1)
+            self._serial.write(bytes([0x01, 0xFF]))
+
         self._ringing = False
 
     def is_ringing(self):
