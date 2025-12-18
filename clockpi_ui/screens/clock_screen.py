@@ -9,6 +9,7 @@ from clockpi_ui.navigator import Navigator
 from clockpi_ui.screen import Screen
 from clockpi_ui.screens.set_alarm_screen import SetAlarmScreen
 from clockpi_ui.ui import Button, ButtonVariant
+from clockpi_ui.ui.colors import PRIMARY
 from clockpi_ui.utils.paths import ASSETS_DIR
 
 
@@ -39,7 +40,7 @@ class ClockScreen(Screen):
         screen.fill((0, 0, 0))
         text_surface, text_rect = self._current_time_font.render(
             f"{str(now.hour).rjust(2, '0')}{center_glyph}{str(now.minute).rjust(2, '0')}",
-            (255, 0, 0) if Alarm.instance().is_ringing() else (255, 255, 255),
+            PRIMARY if Alarm.instance().is_ringing() else (255, 255, 255),
         )
 
         text_rect.center = (screen.get_width() // 2, screen.get_height() // 2)
