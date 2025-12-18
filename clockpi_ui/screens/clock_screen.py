@@ -1,3 +1,5 @@
+import math
+import time
 from datetime import datetime
 
 import pygame
@@ -9,7 +11,8 @@ from clockpi_ui.navigator import Navigator
 from clockpi_ui.screen import Screen
 from clockpi_ui.screens.set_alarm_screen import SetAlarmScreen
 from clockpi_ui.ui import Button, ButtonVariant
-from clockpi_ui.ui.colors import PRIMARY
+from clockpi_ui.ui.colors import PRIMARY, PRIMARY_BACKDROP
+from clockpi_ui.utils.math import lerp_color_4
 from clockpi_ui.utils.paths import ASSETS_DIR
 
 
@@ -27,6 +30,10 @@ class ClockScreen(Screen):
             pygame.image.load(ASSETS_DIR / "icons" / "alarm.png"), (35, 35)
         )
 
+        self._credits_font = pygame.freetype.Font(
+            ASSETS_DIR / "fonts" / "Ubuntu" / "Ubuntu-Medium.ttf", 12
+        )
+
         self._alarm_button_rect = pygame.Rect(0, 0, 0, 0)
         self._alarm_button = Button(variant=ButtonVariant.HIDDEN)
         self._alarm_enable_button = Button()
@@ -37,7 +44,12 @@ class ClockScreen(Screen):
         even_second = now.second % 2 == 0
         center_glyph = " " if even_second else ":"
 
-        screen.fill((0, 0, 0))
+        background = (0, 0, 0)
+        if Alarm.instance().is_ringing():
+            t = (math.sin(time.time()) + 1.0) / 2.0
+            background = lerp_color_4((0, 0, 0, 0), PRIMARY_BACKDROP, t)
+
+        screen.fill(background)
         text_surface, text_rect = self._current_time_font.render(
             f"{str(now.hour).rjust(2, '0')}{center_glyph}{str(now.minute).rjust(2, '0')}",
             PRIMARY if Alarm.instance().is_ringing() else (255, 255, 255),
@@ -85,6 +97,13 @@ class ClockScreen(Screen):
         self.__render_current_time(screen)
         self.__render_alarm_time(screen)
 
+        self._credits_font.render_to(
+            screen,
+            (10, 10),
+            "Mit Liebe von Matteo entwickelt",
+            PRIMARY,
+        )
+
     def is_overlay(self) -> bool:
         return False
 
@@ -103,3 +122,6 @@ class ClockScreen(Screen):
                 return True
 
         return False
+
+    def surface_flags(self) -> int:
+        return pygame.SRCALPHA
