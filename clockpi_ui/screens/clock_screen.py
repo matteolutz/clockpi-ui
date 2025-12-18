@@ -28,6 +28,7 @@ class ClockScreen(Screen):
 
         self._alarm_button_rect = pygame.Rect(0, 0, 0, 0)
         self._alarm_button = Button(variant=ButtonVariant.HIDDEN)
+        self._alarm_enable_button = Button()
 
     def __render_current_time(self, screen: pygame.Surface):
         now = datetime.now()
@@ -69,6 +70,16 @@ class ClockScreen(Screen):
             button_rect,
         )
 
+        self._alarm_enable_button.render_with_pos_and_size(
+            screen,
+            (screen.get_width() - 100, screen.get_height() - 50),
+            (90, 40),
+            variant_override=(
+                ButtonVariant.DEFAULT if alarm_enabled else ButtonVariant.OUTLINE
+            ),
+            label_override=("An" if alarm_enabled else "Aus"),
+        )
+
     def render(self, screen, dt):
         self.__render_current_time(screen)
         self.__render_alarm_time(screen)
@@ -81,4 +92,9 @@ class ClockScreen(Screen):
             if self._alarm_button.was_clicked(event.pos):
                 Navigator.instance().push(SetAlarmScreen())
                 return True
+
+            if self._alarm_enable_button.was_clicked(event.pos):
+                Config.instance().toggle_alarm_enabled()
+                return True
+
         return False

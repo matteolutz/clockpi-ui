@@ -1,12 +1,14 @@
 from typing import Tuple
 
 import pygame
+import pygame.freetype
 
 from clockpi_ui.config import Config
 from clockpi_ui.navigator import Navigator
 from clockpi_ui.screen import Screen
 from clockpi_ui.ui import Button, ButtonVariant
 from clockpi_ui.ui.colors import PRIMARY, PRIMARY_BACKDROP
+from clockpi_ui.utils.paths import ASSETS_DIR
 
 
 class SetAlarmScreen(Screen):
@@ -19,17 +21,20 @@ class SetAlarmScreen(Screen):
         self._minute_up_button = Button(variant=ButtonVariant.DEFAULT, label="+")
         self._minute_down_button = Button(variant=ButtonVariant.DEFAULT, label="-")
 
-        self._time_font = pygame.font.SysFont("Ubuntu", 48)
+        # self._time_font = pygame.font.SysFont("Ubuntu", 48)
+        self._time_font = pygame.freetype.Font(
+            ASSETS_DIR / "fonts" / "Ubuntu" / "Ubuntu-Medium.ttf", 48
+        )
 
         self._alarm_time = Config.instance().get_alarm_time()
 
     def __render_hour(self, screen: pygame.Surface, center: Tuple[int, int]):
-        text = self._time_font.render(f"{self._alarm_time['hour']:02d}", True, PRIMARY)
+        text, rect = self._time_font.render(f"{self._alarm_time['hour']:02d}", PRIMARY)
         screen.blit(
             text,
             (
-                center[0] - text.get_width() // 2,
-                center[1] - text.get_height() // 2,
+                center[0] - rect.width // 2,
+                center[1] - rect.height // 2,
             ),
         )
 
@@ -46,14 +51,14 @@ class SetAlarmScreen(Screen):
         )
 
     def __render_minute(self, screen: pygame.Surface, center: Tuple[int, int]):
-        text = self._time_font.render(
-            f"{self._alarm_time['minute']:02d}", True, PRIMARY
+        text, rect = self._time_font.render(
+            f"{self._alarm_time['minute']:02d}", PRIMARY
         )
         screen.blit(
             text,
             (
-                center[0] - text.get_width() // 2,
-                center[1] - text.get_height() // 2,
+                center[0] - rect.width // 2,
+                center[1] - rect.height // 2,
             ),
         )
 
@@ -85,15 +90,6 @@ class SetAlarmScreen(Screen):
 
         minute_center = (rect.centerx + rect.width // 8, rect.centery)
         self.__render_minute(screen, minute_center)
-
-        text = self._time_font.render(":", True, PRIMARY)
-        screen.blit(
-            text,
-            (
-                rect.centerx - text.get_width() // 2,
-                rect.centery - text.get_height() // 2,
-            ),
-        )
 
         pygame.draw.rect(screen, PRIMARY, rect, 2)
 
