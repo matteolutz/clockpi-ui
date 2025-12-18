@@ -1,4 +1,5 @@
 import logging
+import time
 
 import pygame
 
@@ -10,7 +11,8 @@ from clockpi_ui.screens import ClockScreen
 from .config import Config
 
 RESOLUTION = (480, 320)
-FULLSCREEN = False
+
+AUTOSAVE_INTERVAL = 30
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +55,7 @@ def main():
         Alarm.instance().init_serial(args.serial)
 
     Config.instance().load_config()
+    last_autosave = time.time()
 
     screen = pygame.display.set_mode(
         RESOLUTION, pygame.FULLSCREEN if args.fullscreen else 0
@@ -68,6 +71,11 @@ def main():
                 continue
             if handle_pygame_event(event):
                 running = False
+
+        if time.time() - last_autosave > AUTOSAVE_INTERVAL:
+            logger.info("Autosaving config")
+            Config.instance().save_config()
+            last_autosave = time.time()
 
         dt = clock.get_rawtime()
 
