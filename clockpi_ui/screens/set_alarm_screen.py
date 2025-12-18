@@ -8,7 +8,7 @@ from clockpi_ui.ui.colors import PRIMARY, PRIMARY_BACKDROP
 
 class SetAlarmScreen(Screen):
     def __init__(self) -> None:
-        self._back_button = Button(variant=ButtonVariant.DEFAULT, label="< Zurück")
+        self._submit_button = Button(variant=ButtonVariant.DEFAULT, label="Ok")
 
     def render(self, screen: pygame.Surface, dt: int):
         screen.fill(PRIMARY_BACKDROP)
@@ -17,8 +17,9 @@ class SetAlarmScreen(Screen):
         rect.size = (int(rect.width * 0.8), int(rect.height * 0.8))
         rect.center = screen.get_rect().center
 
-        button_pos = (rect.topleft[0] + 10, rect.topleft[1] + 10)
-        self._back_button.render_with_pos_and_size(screen, button_pos, (100, 30))
+        self._submit_button.render_with_pos_and_size(
+            screen, (rect.right - 60, rect.y + 10), (50, 30)
+        )
 
         pygame.draw.rect(screen, PRIMARY, rect, 2)
 
@@ -31,7 +32,7 @@ class SetAlarmScreen(Screen):
             return True
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self._back_button.was_clicked(event.pos):
+            if self._submit_button.was_clicked(event.pos):
                 Navigator.instance().pop()
 
             # Prevent event propagation
