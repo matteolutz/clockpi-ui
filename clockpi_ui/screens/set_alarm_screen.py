@@ -2,20 +2,25 @@ import pygame
 
 from clockpi_ui.navigator import Navigator
 from clockpi_ui.screen import Screen
+from clockpi_ui.ui import Button, ButtonVariant
+from clockpi_ui.ui.colors import PRIMARY, PRIMARY_BACKDROP
 
 
 class SetAlarmScreen(Screen):
     def __init__(self) -> None:
-        pass
+        self._back_button = Button(variant=ButtonVariant.DEFAULT, label="< Zurück")
 
     def render(self, screen: pygame.Surface, dt: int):
-        screen.fill((2, 0, 10, 240))
+        screen.fill(PRIMARY_BACKDROP)
 
         rect = screen.get_rect()
         rect.size = (int(rect.width * 0.8), int(rect.height * 0.8))
         rect.center = screen.get_rect().center
 
-        pygame.draw.rect(screen, (150, 0, 255), rect, 2)
+        button_pos = (rect.topleft[0] + 10, rect.topleft[1] + 10)
+        self._back_button.render_with_pos_and_size(screen, button_pos, (100, 30))
+
+        pygame.draw.rect(screen, PRIMARY, rect, 2)
 
     def is_overlay(self) -> bool:
         return True
@@ -26,6 +31,9 @@ class SetAlarmScreen(Screen):
             return True
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if self._back_button.was_clicked(event.pos):
+                Navigator.instance().pop()
+
             # Prevent event propagation
             return True
 
