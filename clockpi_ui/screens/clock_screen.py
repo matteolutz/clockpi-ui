@@ -89,6 +89,10 @@ class ClockScreen(Screen):
 
     def handle_event(self, event: pygame.event.Event, screen: pygame.Surface) -> bool:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if Alarm.instance().is_ringing():
+                Alarm.instance().stop()
+                return True
+
             if self._alarm_button.was_clicked(event.pos):
                 Navigator.instance().push(SetAlarmScreen())
                 return True
