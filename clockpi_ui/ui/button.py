@@ -18,7 +18,7 @@ class Button:
         self._rect = None
         self._label = label
         self._variant = variant
-        self._button_font = self._alarm_time_font = pygame.font.SysFont("Arial", 20)
+        self._button_font = self._alarm_time_font = pygame.font.SysFont("Ubuntu", 20)
 
     def render_with_pos_and_size(
         self, screen: pygame.Surface, pos: Tuple[int, int], size: Tuple[int, int]

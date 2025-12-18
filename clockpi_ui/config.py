@@ -1,3 +1,4 @@
+import copy
 import datetime
 import logging
 
@@ -85,7 +86,9 @@ class Config:
         self._config["alarm_enabled"] = not self.get_alarm_enabled()
 
     def get_alarm_time(self):
-        return self._config.get("alarm_time", CONFIG_DEFAULTS["alarm_time"])
+        return copy.deepcopy(
+            self._config.get("alarm_time", CONFIG_DEFAULTS["alarm_time"])
+        )
 
     def set_alarm_time(self, hour: int, minute: int):
         self._config["alarm_time"] = {"hour": hour, "minute": minute}
