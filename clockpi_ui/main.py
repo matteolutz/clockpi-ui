@@ -11,6 +11,7 @@ from clockpi_ui.screens import ClockScreen
 from .config import Config
 
 RESOLUTION = (480, 320)
+FPS = 30
 
 AUTOSAVE_INTERVAL = 30
 
@@ -85,7 +86,7 @@ def main():
         Navigator.instance().render(screen, dt)
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(FPS)
 
     pygame.quit()
     Config.instance().save_config()
