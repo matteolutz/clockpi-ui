@@ -64,6 +64,8 @@ def main():
 
     while running:
         for event in pygame.event.get():
+            if Navigator.instance().handle_event(event, screen):
+                continue
             if handle_pygame_event(event):
                 running = False
 

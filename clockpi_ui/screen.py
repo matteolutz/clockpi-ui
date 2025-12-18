@@ -28,3 +28,16 @@ class Screen(abc.ABC):
         screen is not part of the render stack this frame (see :func:`~clockpi_ui.screen.Screen.is_overlay`):
         """
         pass
+
+    def handle_event(self, event: pygame.event.Event, screen: pygame.Surface) -> bool:
+        """
+        Handles the given pygame event.
+        If the event is handled, True is returned. This will stop the event propagation down the render stack.
+        """
+        return False
+
+    def surface_flags(self) -> int:
+        """
+        Returns the flags for the surface used to render the screen.
+        """
+        return 0

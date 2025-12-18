@@ -5,7 +5,9 @@ import pygame.freetype
 
 from clockpi_ui.alarm import Alarm
 from clockpi_ui.config import Config
+from clockpi_ui.navigator import Navigator
 from clockpi_ui.screen import Screen
+from clockpi_ui.screens.set_alarm_screen import SetAlarmScreen
 from clockpi_ui.utils.paths import ASSETS_DIR
 
 
@@ -17,11 +19,13 @@ class ClockScreen(Screen):
         )
 
         self._alarm_time_font = pygame.freetype.Font(
-            ASSETS_DIR / "fonts" / "software_tester_7.ttf", 25
+            ASSETS_DIR / "fonts" / "software_tester_7.ttf", 35
         )
         self._alarm_icon = pygame.transform.scale(
-            pygame.image.load(ASSETS_DIR / "icons" / "alarm.png"), (25, 25)
+            pygame.image.load(ASSETS_DIR / "icons" / "alarm.png"), (35, 35)
         )
+
+        self._alarm_button_rect = pygame.Rect(0, 0, 0, 0)
 
     def __render_current_time(self, screen: pygame.Surface):
         now = datetime.now()
@@ -59,5 +63,16 @@ class ClockScreen(Screen):
         self.__render_current_time(screen)
         self.__render_alarm_time(screen)
 
+        self._alarm_button_rect.bottomleft = (10, screen.get_height() - 10)
+        self._alarm_button_rect.size = (150, 40)
+        # pygame.draw.rect(screen, (255, 0, 0), self._alarm_button_rect)
+
     def is_overlay(self) -> bool:
+        return False
+
+    def handle_event(self, event: pygame.event.Event, screen: pygame.Surface) -> bool:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self._alarm_button_rect.collidepoint(event.pos):
+                Navigator.instance().push(SetAlarmScreen())
+                return True
         return False

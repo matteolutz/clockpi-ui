@@ -35,4 +35,17 @@ class Navigator:
             return
 
         for s in self.render_stack:
-            s.render(screen, dt)
+            screen_surface = pygame.Surface(
+                (screen.get_width(), screen.get_height()), s.surface_flags()
+            )
+            s.render(screen_surface, dt)
+            screen.blit(screen_surface, (0, 0))
+
+    def handle_event(self, event: pygame.event.Event, screen: pygame.Surface) -> bool:
+        if not self.render_stack:
+            return False
+
+        for s in reversed(self.render_stack):
+            if s.handle_event(event, screen):
+                return True
+        return False
