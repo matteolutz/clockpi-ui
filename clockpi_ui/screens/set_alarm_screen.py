@@ -18,7 +18,7 @@ class SetAlarmScreen(Screen):
         rect.center = screen.get_rect().center
 
         self._submit_button.render_with_pos_and_size(
-            screen, (rect.right - 60, rect.y + 10), (50, 30)
+            screen, (rect.right - 80, rect.y + 10), (70, 50)
         )
 
         pygame.draw.rect(screen, PRIMARY, rect, 2)

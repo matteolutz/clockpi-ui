@@ -40,7 +40,13 @@ class Button:
 
         if self._variant != ButtonVariant.HIDDEN and self._label:
             text = self._button_font.render(self._label, True, (255, 255, 255))
-            screen.blit(text, (self._rect.x + 5, self._rect.y + 2.5))
+            screen.blit(
+                text,
+                (
+                    self._rect.centerx - text.get_width() // 2,
+                    self._rect.centery - text.get_height() // 2,
+                ),
+            )
 
     def was_clicked(self, mouse_pos: Tuple[int, int]) -> bool:
         if not self._rect:
