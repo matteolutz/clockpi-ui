@@ -18,7 +18,7 @@ class Button:
         self._rect = None
         self._label = label
         self._variant = variant
-        self._button_font = self._alarm_time_font = pygame.font.SysFont("Arial", 25)
+        self._button_font = self._alarm_time_font = pygame.font.SysFont("Arial", 20)
 
     def render_with_pos_and_size(
         self, screen: pygame.Surface, pos: Tuple[int, int], size: Tuple[int, int]
@@ -40,7 +40,7 @@ class Button:
 
         if self._variant != ButtonVariant.HIDDEN and self._label:
             text = self._button_font.render(self._label, True, (255, 255, 255))
-            screen.blit(text, (self._rect.x + 5, self._rect.y))
+            screen.blit(text, (self._rect.x + 5, self._rect.y + 2.5))
 
     def was_clicked(self, mouse_pos: Tuple[int, int]) -> bool:
         if not self._rect:
